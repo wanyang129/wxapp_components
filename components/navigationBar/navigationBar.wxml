@@ -1,7 +1,7 @@
 <block wx:if="{{isCustom}}">
   <view class="navigation-bar" style="padding-top:{{statusBarHeight}}px;">
     <view class="{{system==='android'?'navigation-container navigation-container-android':'navigation-container'}}">
-      <view wx:if="{{showBack}}" class="navigation-back" bindtap="routeBack"><image class="back" src="/images/back.png"></image></view>
+      <view wx:if="{{showBack}}" class="navigation-back" bindtap="routeBack"><image class="back" src="/components/images/back.png"></image></view>
       <view class="page-title" wx:if="{{pageTitle}}">
         <view class="title-text">{{pageTitle}}</view>
       </view>
