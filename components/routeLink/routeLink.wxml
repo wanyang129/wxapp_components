@@ -1,0 +1,3 @@
+<view class="navigator" catchtap="pageRoute">
+  <slot></slot>
+</view>

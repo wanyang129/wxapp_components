@@ -1,0 +1,37 @@
+/* 顶部tab栏 */
+.page-tab {
+  height: 30px;
+  border-bottom: 1rpx solid #eee;
+}
+.inner{
+  height: 30px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  background:#ffffff;
+}
+.tab-title {
+  flex: 1;
+  font-size: 28rpx;
+  text-align: center;
+  border-left: 1rpx solid #dddddd;
+  box-sizing: border-box;
+}
+.tab-title.current{
+  color: #01C07A;
+}
+.tab-title:first-of-type{
+  border-left: 0;
+}
+.animation {
+  width: 110rpx;
+  height: 4rpx;
+  background: #01C07A;
+  position: absolute;
+  bottom: 0;
+}
+
+.tab-item {
+  display: block;
+  width: 100%;
+}

@@ -1,0 +1,12 @@
+<scroll-view class="page-tab" scroll-x="true" scroll-into-view="title-{{viewIndex}}">
+  <view class="inner" style="width:{{tabWidth}}">
+    <view style="width:{{tabSpacing}}rpx" class="{{index===tabIndex?'tab-title current':'tab-title'}}" id="title-{{index}}" wx:for="{{tabs}}" wx:key="index" data-index="{{index}}" bindtap="tabClick">{{tabName}}{{index+1}}</view>
+    <!-- 导航条绿条动画 -->
+    <view class="animation" style="left:{{left}};" animation="{{animationData}}"></view>
+  </view>
+</scroll-view>
+<swiper class="tab-container" style="height:{{swiperHeight-paddingBottom}}px;" current="{{tabIndex}}" bindchange="swiperChange" bindanimationfinish="swiperAnimation">
+  <swiper-item class="tab-item" wx:for="{{tabs}}" wx:key="{{index}}">
+    <slot name="swiper-{{index}}"></slot>
+  </swiper-item>
+</swiper>

@@ -1,0 +1,14 @@
+button{
+  background: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  line-height: 1;
+  border-radius: 0;
+}
+button::after{
+  display: none;
+}
+.navigator{
+  width: 100%;
+  display: block;
+}

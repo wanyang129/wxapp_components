@@ -1,0 +1,23 @@
+<textarea wx:if="{{showText}}" class="origin-text"
+  style="height:{{areaHeight || 200}}px;"
+  placeholder="{{placeholder}}"
+  placeholder-class="origin-placeholder"
+  value="{{value}}"
+  adjust-position="{{false}}"
+  cursor="{{cursor}}"
+  auto-focus="{{true}}"
+  disabled="{{disabled}}"
+  maxlength="{{maxlength}}"
+  show-confirm-bar="{{false}}"
+  bindfocus="textFocus"
+  bindblur="textBlur"
+  bindinput="textInput">
+</textarea>
+<scroll-view wx:else
+   class="{{isplaceholder?'mock-text textarea-placeholder':'mock-text'}}"
+   style="height:{{placeHeight}}px;"
+   bindtap="enableTextarea"
+   bindlongpress="enableTextarea"
+   scroll-y="true">
+  <text space="nbsp" class="text-inner">{{textplace}}</text>
+</scroll-view>

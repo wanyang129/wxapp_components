@@ -1,0 +1,28 @@
+<block wx:if="{{modalType==='tips' || modalType==='continuetips'}}">
+  <view wx:if="{{showModal}}" class="modal-container">
+    <view class="modal-tips">{{modalTips}}</view>
+  </view>
+</block>
+
+<block wx:elif="{{modalType==='alert'}}">
+  <view class="mask" wx:if="{{showModal}}">
+    <view class="modal-layer">
+      <slot></slot>
+      <view class="layer-btns">
+        <view class="layer-btn" bindtap="alertModal">{{alertText}}</view>
+      </view>
+    </view>
+  </view>
+</block>
+
+<block wx:elif="{{modalType==='confirm'}}">
+  <view class="mask" wx:if="{{showModal}}">
+    <view class="modal-layer">
+      <slot></slot>
+      <view class="layer-btns">
+        <view class="layer-btn" bindtap="cancelModal">{{cancelText}}</view>
+        <view class="layer-btn" bindtap="confirmModal">{{confirmText}}</view>
+      </view>
+    </view>
+  </view>
+</block>

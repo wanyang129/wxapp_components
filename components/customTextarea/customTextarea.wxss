@@ -1,0 +1,35 @@
+.origin-text{
+  width: 100%;
+}
+.origin-text,.mock-text{
+  line-height: 23px;
+  font-size: 16px;
+}
+.mock-text{
+  color: #000000;
+  box-sizing: border-box;
+  padding: 6px 6px 7px;
+}
+.text-inner{
+  line-height: 23px;
+  letter-spacing: 0;
+  letter-spacing: 0.3px;
+  display: block;
+  height: auto;
+  color: #000000;
+  word-break: break-all;
+}
+.textarea-placeholder{
+  padding-top: 8px;
+}
+.textarea-placeholder .text-inner{
+  line-height: 19px;
+}
+/* textarea placeholder样式 */
+.origin-placeholder,.textarea-placeholder .text-inner{
+  color: #999999;
+  font-size: 16px;
+}
+.origin-placeholder{
+  display: block;
+}

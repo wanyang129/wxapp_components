@@ -1,0 +1,46 @@
+.navigation-bar{
+  width: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  z-index: 10000;
+  background: #3AAD7F;
+  color: #ffffff;
+}
+.navigation-container{
+  position: relative;
+  height: 44px;
+  line-height: 44px;
+}
+.navigation-container-android{
+  height: 48px;
+  line-height: 48px;
+}
+.navigation-back{
+  width: 50px;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+}
+.back{
+  width: 16rpx;
+  height: 32rpx;
+  display: block;
+  margin: 0 auto;
+}
+.page-title{
+  text-align: center;
+  font-size: 18px;
+}
+.title-text{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 460rpx;
+  margin: 0 auto;
+}

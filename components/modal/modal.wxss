@@ -1,0 +1,60 @@
+/* tips模态框 */
+.modal-container{
+  width: 100%;
+  height: 100rpx;
+  /* line-height: 60rpx; */
+  text-align: center;
+  position: fixed;
+  z-index: 13000;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: center;
+}
+.modal-tips{
+  background: #e4e4e4;
+  color: #333333;
+  font-size: 30rpx;
+  border-radius: 20rpx;
+  padding: 20rpx 50rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+}
+/* confirm模态框 */
+.mask{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 20000;
+}
+.modal-layer{
+  width: 500rpx;
+  background: #ffffff;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  border-radius: 10rpx;
+  text-align: center;
+}
+.layer-btns{
+  display: flex;
+  font-size: 34rpx;
+  border-top: 1rpx solid #D0D0D0;
+}
+.layer-btn{
+  flex: 1;
+  line-height: 50rpx;
+  padding: 20rpx 0;
+  color: #007AFF;
+  border-left: 1rpx solid #D0D0D0;
+}
+.layer-btn:first-of-type{
+  border-left: none;
+}
