@@ -28,7 +28,17 @@ Component({
     this.screenWidth = wx.getSystemInfoSync().screenWidth;
     this.initLineHeight(this.screenWidth);
   },
+  ready() {
+    wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper").boundingClientRect().exec(res => {
+      console.log("custom-text", res)
+      console.log("custom-text context", res.context);
+    });
+  },
   methods: {
+    // 长按事件
+    textPress(e) {
+      console.log("textPress", e);
+    },
     // 获取文本的坐标位置
     getTextOffset: function () {
       setTimeout(() => {

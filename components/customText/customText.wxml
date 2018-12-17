@@ -1,5 +1,5 @@
 <view class="custom-text-container">
-  <view class="custom-text-wrapper" bindlongpress="longPress" bindtap="textTap" bindtouchend="textTouchEnd">
+  <!-- <view class="custom-text-wrapper" bindlongpress="longPress" bindtap="textTap" bindtouchend="textTouchEnd">
     <view data-index="{{index}}" 
       class="custom-text" 
       style="font-size:{{fontSize}}"
@@ -8,6 +8,9 @@
       id="text-{{index}}"
       data-text="{{item}}"
       data-id="{{index}}">{{item}}</view>
+  </view> -->
+  <view class="custom-text-wrapper" bindlongpress="textPress">
+    <slot></slot>
   </view>
   <block wx:if="{{showHighlight}}">
     <view class="hights" wx:for="{{hights}}" wx:key="id" style="width:{{item.width}};height:{{lineHeight}}px;left:{{item.left}};top:{{item.top}};"></view>

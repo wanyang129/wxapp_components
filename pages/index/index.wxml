@@ -1,1 +1,1 @@
-<view>index<view>
+<custom-text>{{text}}</custom-text>
