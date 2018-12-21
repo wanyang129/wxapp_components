@@ -64,3 +64,12 @@
 |  bindfocus       |    EventHandle |           |    输入框聚集时触发,event.detail={height},height为键盘的高度  |
 |  bindblur        |    EventHandle |           |    输入框失去焦点时触发                                      |
 |  bindinput       |    EventHandle |           |    键盘输入时,触发input事件,event.detail={value}             | 
+
+
+## 自定义文本组件         components/customText/customText
+### 文档说明
+|  属性名           |    类型       |  默认值   |    说明                        |
+|:----------------:|--------------:|----------:|-------------------------------:|
+|  text           |    String      |           |    需要渲染的文本内容            |
+|  selectable     |    Boolean     |  false    |    文本是否可选                 |
+|  font-size      |    String      |  32rpx    |    文本字体大小                 |

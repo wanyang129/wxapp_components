@@ -11,7 +11,7 @@ Component({
       value: false
     }
   },
-  attached: function () {
+  attached() {
     let systemInfo = wx.getSystemInfoSync();
     let screenHeight = systemInfo.screenHeight;
     let windowHeight = systemInfo.windowHeight;
@@ -27,7 +27,7 @@ Component({
     }
   },
   methods: {
-    routeBack: function () {
+    routeBack() {
       if (this.properties.customBack) {
         this.triggerEvent("back");
       } else {

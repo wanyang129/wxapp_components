@@ -18,7 +18,7 @@ Component({
     focus: {
       type: Boolean,
       value: false,
-      observer: function () {
+      observer() {
         if (this.properties.focus && !this.data.showText) {
           this.enableTextarea();
         } else if (!this.properties.focus && this.data.showText) {
@@ -29,7 +29,7 @@ Component({
     value: {
       type: String,
       value: "",
-      observer: function () {
+      observer() {
         if (!this.data.showText) {
           this.initPlaceText();
         }
@@ -47,11 +47,11 @@ Component({
   data: {
     showText: false
   },
-  attached: function () {
+  attached() {
     this.initPlaceText();
   },
   methods: {
-    initPlaceText: function () {
+    initPlaceText() {
       this.value = this.properties.value;
       if (this.value) {
         this.setData({
@@ -66,10 +66,10 @@ Component({
       }
     },
 
-    textFocus: function (e) {
+    textFocus(e) {
       this.triggerEvent("focus", { height: e.detail.height });
     },
-    textBlur: function (e) {
+    textBlur(e) {
       if (this.value) {
         this.setData({
           showText: false,
@@ -85,7 +85,7 @@ Component({
       }
       this.triggerEvent("blur");
     },
-    textInput: function (e) {
+    textInput(e) {
       this.value = e.detail.value;
       this.cursor = e.detail.cursor;
       this.setData({
@@ -93,13 +93,13 @@ Component({
       });
       this.triggerEvent("input", { value: e.detail.value });
     },
-    enableTextarea: function () {
+    enableTextarea() {
       this.setData({
         showText: true,
         cursor: this.properties.value.length
       });
     },
-    disableTextarea: function () {
+    disableTextarea() {
       this.setData({
         showText: false
       });

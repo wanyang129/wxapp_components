@@ -2,7 +2,7 @@ Component({
   properties: {
     text: {
       type: String,
-      observer: function () {
+      observer() {
         this.getTextOffset();
       }
     },
@@ -23,16 +23,12 @@ Component({
       { id: "copy", text: "复制", done: false }
     ]
   },
-  attached: function () {
+  attached() {
     // 获取屏幕宽度
+    let system_info = wx.getSystemInfoSync();
+    console.log("system_info", system_info);
     this.screenWidth = wx.getSystemInfoSync().screenWidth;
     this.initLineHeight(this.screenWidth);
-  },
-  ready() {
-    wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper").boundingClientRect().exec(res => {
-      console.log("custom-text", res)
-      console.log("custom-text context", res.context);
-    });
   },
   methods: {
     // 长按事件
@@ -40,7 +36,7 @@ Component({
       console.log("textPress", e);
     },
     // 获取文本的坐标位置
-    getTextOffset: function () {
+    getTextOffset() {
       setTimeout(() => {
         let text_data = [];
         wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper, .custom-text,.custom-text-slot").boundingClientRect().exec((res) => {
@@ -81,11 +77,11 @@ Component({
         })
       }, 0);
     },
-    // 初始化字体大小
-    initFontSize: function (screen_width) {
+    // 将字体大小转成以px为单位的值
+    initFontSize(screen_width) {
       let font_size = this.properties.fontSize;
       if (font_size.indexOf("rpx") > -1) {
-        // 以rpx为单位    
+        // 以rpx为单位(转换的时候进行下舍入)
         font_size = parseInt(font_size.substring(0, font_size.length - 3));
         if (screen_width === 375) {
           font_size = Math.floor(font_size / 2);
@@ -98,17 +94,19 @@ Component({
       }
       return font_size;
     },
-    // 初始化行高
-    initLineHeight: function (screen_width) {
+    // 根据字体大小计算行高
+    initLineHeight(screen_width) {
       let font_size = this.initFontSize(screen_width);
       let line_height = Math.floor(font_size * 1.6);
       this.setData({
+        // 行高
         lineHeight: line_height,
+        // 字体大小
         fontSize: font_size
       });
     },
     // 文本内容长按事件
-    longPress: function (e) {
+    longPress(e) {
       console.log("longPress", e);
       this.touchType = e.type;
       if (this.properties.selectable) {
@@ -146,21 +144,21 @@ Component({
         });
       }
     },
-    textTap: function (e) {
+    textTap(e) {
       this.touchType = e.type;
       if (this.data.selectModal) {
         this.closeSelectModal();
       }
     },
-    textTouchEnd: function (e) {
+    textTouchEnd(e) {
       if (this.properties.selectable && this.touchType === "longpress") {
         this.showSelectModal();
       }
     },
-    minTouchStart: function (e) {
+    minTouchStart(e) {
       this.closeSelectModal();
     },
-    minTouchMove: function (e) {
+    minTouchMove(e) {
       console.log("minTouchMove", e);
       let pageX = e.touches[0].pageX;
       let pageY = e.touches[0].pageY - this.containerTop;
@@ -189,13 +187,13 @@ Component({
         minStyle: minStyle
       });
     },
-    minTouchEnd: function (e) {
+    minTouchEnd(e) {
       this.showSelectModal();
     },
-    maxTouchStart: function (e) {
+    maxTouchStart(e) {
       this.closeSelectModal();
     },
-    maxTouchMove: function (e) {
+    maxTouchMove(e) {
       console.log("maxTouchMove", e);
       let pageX = e.touches[0].pageX;
       let pageY = e.touches[0].pageY - this.containerTop;
@@ -232,11 +230,11 @@ Component({
         maxStyle: maxStyle
       });
     },
-    maxTouchEnd: function (e) {
+    maxTouchEnd(e) {
       this.showSelectModal();
     },
     // 获取选中行数及样式
-    getHights: function () {
+    getHights() {
       let text_datas = this.textDatas;
       let hights = [];
       if (this.minCount === this.maxCount) {
@@ -279,7 +277,7 @@ Component({
       return hights;
     },
     // 显示操作按钮
-    showSelectModal: function () {
+    showSelectModal() {
       console.log(this.properties.text.substring(this.minIndex, this.maxIndex + 1));
       let direction = "down", modal_style, modal_left = "";
       if (this.textDatas[this.minCount].top + this.containerTop < 50) {
@@ -321,13 +319,13 @@ Component({
       });
     },
     // 隐藏操作按钮
-    closeSelectModal: function () {
+    closeSelectModal() {
       this.setData({
         selectModal: false
       });
     },
     // 点击操作按钮
-    btnTap: function (e) {
+    btnTap(e) {
       let id = e.currentTarget.dataset.id;
       if (id === "copy") {
         // 复制

@@ -26,17 +26,17 @@ Component({
       type: String
     }
   },
-  attached: function () {
+  attached() {
     this.page_flag = true;
   },
   methods: {
-    initFlag: function () {
+    initFlag() {
       if (!this.page_flag) {
         this.page_flag = true;
       }
     },
     // 路由跳转
-    pageRoute: function () {
+    pageRoute() {
       if (this.page_flag) {
         this.page_flag = false;
         if (this.properties.isCustom && this.properties.isCustom.event) {

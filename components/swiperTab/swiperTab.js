@@ -6,7 +6,7 @@ Component({
   properties: {
     tabs: {
       type: Number,
-      observer: function () {
+      observer() {
         this.init();
       }
     },
@@ -29,7 +29,7 @@ Component({
     animationData: {},
   },
   methods: {
-    init: function () {
+    init() {
       let tabs = this.properties.tabs;
       let extra = app.globalData.system === "android" ? 48 : 44;
       // 一页显示几个标签
@@ -44,19 +44,19 @@ Component({
         swiperHeight: app.globalData.screenHeight - app.globalData.statusBarHeight - 30 - extra
       });
     },
-    tabClick: function (e) {
+    tabClick(e) {
       this.lastIndex = this.properties.tabIndex;
       let index = e.currentTarget.dataset.index;
       this.setAnimation(index);
     },
     // 轮播图滑动
-    swiperChange: function (e) {
+    swiperChange(e) {
       this.lastIndex = this.properties.tabIndex;
       let current = e.detail.current;
       this.setAnimation(current, "swiper");
     },
     // 轮播图动画结束时触发事件
-    swiperAnimation: function (e) {
+    swiperAnimation(e) {
       if (e.detail.current === this.properties.tabs - 1) {
         if (e.detail.current === this.lastIndex) {
           this.triggerEvent("swiperend");
@@ -66,7 +66,7 @@ Component({
       }
     },
     // 绿条动画效果
-    setAnimation: function (index, type) {
+    setAnimation(index, type) {
       if (this.data.tabIndex !== index || type === "swiper") {
         let tabs = this.properties.tabs;
         let viewIndex = 0;

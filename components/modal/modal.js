@@ -3,7 +3,7 @@ Component({
     // 是否展示模态框
     showModal: {
       type: Boolean,
-      observer: function () {
+      observer() {
         if (this.properties.modalType === "tips") {
           if (this.timeout) {
             clearInterval(this.timeout);
@@ -20,7 +20,7 @@ Component({
     // 当modalType为continuetips时有效
     changeTimes: {
       type: Number,
-      observer: function () {
+      observer() {
         if (this.properties.modalType === "continuetips") {
           if (this.timeout) {
             clearTimeout(this.timeout);
@@ -62,19 +62,19 @@ Component({
   },
   methods: {
     // 点击取消按钮
-    cancelModal: function () {
+    cancelModal() {
       this.setData({
         showModal: false
       })
     },
-    confirmModal: function () {
+    confirmModal() {
       // 点击确定按钮
       this.setData({
         showModal: false
       });
       this.triggerEvent("confirm");
     },
-    alertModal: function () {
+    alertModal() {
       this.setData({
         showModal: false
       });
