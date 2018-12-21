@@ -37,8 +37,6 @@ Component({
   },
   attached() {
     // 获取屏幕宽度
-    let system_info = wx.getSystemInfoSync();
-    console.log("system_info", system_info);
     this.screenWidth = wx.getSystemInfoSync().screenWidth;
     this.initLineHeight(this.screenWidth);
   },
@@ -168,7 +166,7 @@ Component({
     },
     textTouchEnd(e) {
       if (this.properties.selectable && this.touch === 1) {
-        this.showSelectModal();
+        this.showSelectModal(-1);
       }
       this.touch = -1;
     },
@@ -205,7 +203,7 @@ Component({
       });
     },
     minTouchEnd(e) {
-      this.showSelectModal();
+      this.showSelectModal(-1);
     },
     maxTouchStart(e) {
       this.closeSelectModal();
@@ -248,7 +246,7 @@ Component({
       });
     },
     maxTouchEnd(e) {
-      this.showSelectModal();
+      this.showSelectModal(-1);
     },
     // 获取选中行数及样式
     getHights() {
@@ -296,7 +294,7 @@ Component({
       return hights;
     },
     // 显示操作按钮
-    showSelectModal() {
+    showSelectModal(selectIndex) {
       console.log(this.properties.text.substring(this.minIndex, this.maxIndex + 1));
       let direction = "down", modal_style, modal_left = "";
       if (this.textDatas[this.minCount].top + this.containerTop < 50) {
@@ -426,14 +424,28 @@ Component({
     selctTap(e) {
       console.log("selctTap", e);
       let index = e.currentTarget.dataset.index;
+      // this.showSelectModal(index);
       let selects = this.data.selects;
       let btns = [];
-      btns.push({
-        id: "note", text: selects[index].note ? "删除笔记" : "笔记"
-      });
-      btns.push({
-        id: "line", text: selects[index].line ? "删除下划线" : "下划线"
-      });
+      if (selects[index].note || selects[index].line) {
+        if (selects[index].note) {
+          btns.push({
+            id: "note", text: "删除笔记"
+          });
+        }
+        if (selects[index].line) {
+          btns.push({
+            id: "line", text: "删除下划线"
+          });
+        }
+      } else {
+        btns.push({
+          id: "note", text: selects[index].note ? "删除笔记" : "笔记"
+        });
+        btns.push({
+          id: "line", text: selects[index].line ? "删除下划线" : "下划线"
+        });
+      }
       btns.push({
         id: "copy", text: "复制"
       });
