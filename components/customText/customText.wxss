@@ -10,7 +10,7 @@
 .custom-text{
   letter-spacing: 0;
   position: relative;
-  z-index: 0;
+  z-index: 10;
 }
 .custom-text.current{
   background: rgba(177,208,239,0.6);
@@ -85,4 +85,19 @@
 .btn-modals.down::after{
   border-color: #000000 transparent transparent transparent;
   bottom: -20px;
+}
+/* 选中标记 */
+.selects{
+  position: absolute;
+  background: #9efed8;
+  z-index: 1;
+}
+.selects-disable{
+  position: absolute;
+  z-index: 20;
+}
+.selects-disable{
+  position: absolute;
+  z-index: 20;
+  border-bottom: 1rpx solid #ff0000;
 }

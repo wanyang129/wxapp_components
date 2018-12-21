@@ -17,6 +17,8 @@ Component({
     }
   },
   data: {
+    selectIndex: -1,
+    selects: [],
     btns: [
       { id: "note", text: "笔记", done: false },
       { id: "line", text: "下划线", done: false },
@@ -31,23 +33,20 @@ Component({
     this.initLineHeight(this.screenWidth);
   },
   methods: {
-    // 长按事件
-    textPress(e) {
-      console.log("textPress", e);
-    },
     // 获取文本的坐标位置
     getTextOffset() {
       setTimeout(() => {
         let text_data = [];
-        wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper, .custom-text,.custom-text-slot").boundingClientRect().exec((res) => {
+        wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper, .custom-text").boundingClientRect().exec((res) => {
           console.log("custom-text", res);
           let text_arr = res[0];
           this.containerTop = text_arr[0].top;
           let j = -1;
           for (let i = 1, len = text_arr.length - 1; i < len; i++) {
-            let num = (text_arr[i].top - this.containerTop) / this.data.lineHeight;
-            if (num !== j) {
-              j = num;
+            // 文字处于第几行
+            let line_count = (text_arr[i].top - this.containerTop) / this.data.lineHeight;
+            if (line_count !== j) {
+              j = line_count;
               text_data[j] = {
                 top: text_arr[i].top - this.containerTop,
                 bottom: text_arr[i].bottom - this.containerTop,
@@ -108,7 +107,7 @@ Component({
     // 文本内容长按事件
     longPress(e) {
       console.log("longPress", e);
-      this.touchType = e.type;
+      this.touch = 1;
       if (this.properties.selectable) {
         // 支持长按事件
         let minIndex = -1, maxIndex = -1, minStyle = "", maxStyle = "", hights = [];
@@ -126,7 +125,9 @@ Component({
             minStyle = "left:" + (row_data.data[j].left - 5) + "px;top:" + row_data.top + "px;";
             maxStyle = "left:" + (row_data.data[j].left + row_data.data[j].width - 5) + "px;top:" + row_data.top + "px;";
             hights.push({
-              id: 0,
+              minIndex: this.minIndex,
+              maxIndex: this.maxIndex,
+              count: 0,
               left: row_data.data[j].left + "px",
               top: row_data.top + "px",
               width: row_data.data[j].width + "px"
@@ -145,15 +146,16 @@ Component({
       }
     },
     textTap(e) {
-      this.touchType = e.type;
+      console.log("textTap", e);
       if (this.data.selectModal) {
         this.closeSelectModal();
       }
     },
     textTouchEnd(e) {
-      if (this.properties.selectable && this.touchType === "longpress") {
+      if (this.properties.selectable && this.touch === 1) {
         this.showSelectModal();
       }
+      this.touch = -1;
     },
     minTouchStart(e) {
       this.closeSelectModal();
@@ -245,22 +247,24 @@ Component({
           width = (text_datas[this.maxCount].data[this.maxCountIndex].right - text_datas[this.minCount].data[this.minCountIndex].left) + "px";
         }
         hights.push({
-          id: 0,
+          minIndex: this.minIndex,
+          maxIndex: this.maxIndex,
+          count: 0,
           left: text_datas[this.minCount].data[this.minCountIndex].left + "px",
           top: text_datas[this.minCount].top + "px",
           width: width
         });
       } else {
-        let id = 0;
+        let count = 0;
         hights.push({
-          id: id++,
+          count: count++,
           left: text_datas[this.minCount].data[this.minCountIndex].left + "px",
           top: text_datas[this.minCount].top + "px",
           width: (this.screenWidth - text_datas[this.minCount].data[this.minCountIndex].left) + "px"
         });
         for (let i = this.minCount + 1; i < this.maxCount; i++) {
           hights.push({
-            id: id++,
+            count: count++,
             left: text_datas[i].left + "px",
             top: text_datas[i].top + "px",
             width: (this.screenWidth - text_datas[i].left) + "px"
@@ -268,7 +272,7 @@ Component({
         }
         let width = (text_datas[this.maxCount].data[this.maxCountIndex].right - text_datas[this.maxCount].left) + "px";
         hights.push({
-          id: id++,
+          count: count++,
           left: text_datas[this.maxCount].left + "px",
           top: text_datas[this.maxCount].top + "px",
           width: width
@@ -321,39 +325,108 @@ Component({
     // 隐藏操作按钮
     closeSelectModal() {
       this.setData({
-        selectModal: false
+        selectModal: false,
       });
     },
     // 点击操作按钮
     btnTap(e) {
-      let id = e.currentTarget.dataset.id;
+      console.log("btntap", e);
+      let dataset = e.currentTarget.dataset;
+      let select_index = dataset.selectIndex;
+      let id = dataset.id;
+
+
       if (id === "copy") {
         // 复制
         wx.setClipboardData({
           data: this.data.selectText,
           success: () => {
             // 复制成功之后事件
+            this.setData({
+              showHighlight: false,
+              hights: [],
+              selectModal: false,
+              selectIndex: -1
+            });
           }
         });
       } else if (id === "line") {
         // 下划线
+        if (select_index === -1) {
+          // 高亮选中
+          let selects = this.data.selects;
+          let len = selects.length;
+          selects.push({
+            id: len,
+            hights: this.data.hights,
+            line: true
+          });
+          this.setData({
+            showHighlight: false,
+            hights: [],
+            selectModal: false,
+            selectIndex: -1,
+            selects: selects
+          });
+          console.log("selects", this.data.selects);
+        } else {
+          let selects = this.data.selects;
+          selects.splice(select_index, 1);
+          this.setData({
+            selectModal: false,
+            selectIndex: -1,
+            selects: selects
+          });
+        }
       } else if (id === "note") {
         // 笔记
-        let btns = this.data.btns;
-        // for (let i = 0, len = btns.length; i < len; i++) {
-        //   if (btns[i].id === "note") {
-        //     btns[i].text = btns[i].done ? "笔记" : "删除笔记"
-        //     btns[i].done = !btns[i].done;
-        //   }
-        //   // if(btns[i].id==="line"){
-        //   //   if(btns[i])
-        //   // }
-        // }
-        // this.setData({
-        //   btns: btns
-        // });
+        if (select_index === -1) {
+          // 高亮选中
+          let selects = this.data.selects;
+          let len = selects.length;
+          selects.push({
+            id: len,
+            hights: this.data.hights,
+            note: true
+          });
+          this.setData({
+            showHighlight: false,
+            hights: [],
+            selectModal: false,
+            selectIndex: -1,
+            selects: selects
+          });
+          console.log("selects", this.data.selects);
+        } else {
+          let selects = this.data.selects;
+          selects.splice(select_index, 1);
+          this.setData({
+            selectModal: false,
+            selectIndex: -1,
+            selects: selects
+          });
+        }
       }
-      // this.triggerEvent("btn", { index: index, selectText: this.data.selectText });
+    },
+    selctTap(e) {
+      console.log("selctTap", e);
+      let index = e.currentTarget.dataset.index;
+      let selects = this.data.selects;
+      let btns = [];
+      btns.push({
+        id: "note", text: selects[index].note ? "删除笔记" : "笔记", done: false
+      });
+      btns.push({
+        id: "line", text: selects[index].line ? "删除下划线" : "下划线", done: false
+      });
+      btns.push({
+        id: "copy", text: "复制", done: false
+      });
+      this.setData({
+        selectIndex: index,
+        btns: btns,
+        selectModal: true
+      })
     }
   }
 })

@@ -1,1 +1,1 @@
-<custom-text text="{{text}}"></custom-text>
+<custom-text text="{{text}}" selectable="{{true}}"></custom-text>
