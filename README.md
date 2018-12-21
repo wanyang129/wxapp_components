@@ -72,4 +72,6 @@
 |:----------------:|--------------:|----------:|-------------------------------:|
 |  text           |    String      |           |    需要渲染的文本内容            |
 |  selectable     |    Boolean     |  false    |    文本是否可选                 |
-|  font-size      |    String      |  32rpx    |    文本字体大小                 |
+|  space          |    String      |  false    |    是否显示连续空格             |
+|  decode         |    Boolean     |  false    |    是否解码                    |
+|  font-size      |    String      |  32rpx    |    文本字体大小(单位为rpx或px)  |

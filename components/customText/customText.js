@@ -11,6 +11,16 @@ Component({
       type: Boolean,
       value: false
     },
+    // 是否显示连续空格
+    space: {
+      type: String,
+      value: "false"
+    },
+    // 是否解码
+    decode: {
+      type: Boolean,
+      value: false
+    },
     fontSize: {
       type: String,
       value: "32rpx"
@@ -20,9 +30,9 @@ Component({
     selectIndex: -1,
     selects: [],
     btns: [
-      { id: "note", text: "笔记", done: false },
-      { id: "line", text: "下划线", done: false },
-      { id: "copy", text: "复制", done: false }
+      { id: "note", text: "笔记" },
+      { id: "line", text: "下划线" },
+      { id: "copy", text: "复制" }
     ]
   },
   attached() {
@@ -31,6 +41,9 @@ Component({
     console.log("system_info", system_info);
     this.screenWidth = wx.getSystemInfoSync().screenWidth;
     this.initLineHeight(this.screenWidth);
+  },
+  detached() {
+    // 将选中文本进行缓存
   },
   methods: {
     // 获取文本的坐标位置
@@ -90,6 +103,8 @@ Component({
       } else if (font_size.indexOf("px") > -1) {
         // 以px为单位
         font_size = parseInt(font_size.substring(0, font_size.length - 2));
+      } else {
+        font_size = 16;
       }
       return font_size;
     },
@@ -414,13 +429,13 @@ Component({
       let selects = this.data.selects;
       let btns = [];
       btns.push({
-        id: "note", text: selects[index].note ? "删除笔记" : "笔记", done: false
+        id: "note", text: selects[index].note ? "删除笔记" : "笔记"
       });
       btns.push({
-        id: "line", text: selects[index].line ? "删除下划线" : "下划线", done: false
+        id: "line", text: selects[index].line ? "删除下划线" : "下划线"
       });
       btns.push({
-        id: "copy", text: "复制", done: false
+        id: "copy", text: "复制"
       });
       this.setData({
         selectIndex: index,

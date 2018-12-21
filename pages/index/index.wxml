@@ -1,1 +1,1 @@
-<custom-text text="{{text}}" selectable="{{true}}"></custom-text>
+<custom-text text="{{text}}" selectable="{{true}}" space="emsp"></custom-text>

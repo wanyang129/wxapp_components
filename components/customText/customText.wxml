@@ -1,12 +1,14 @@
 <view class="custom-text-container">
   <view class="custom-text-wrapper" style="font-size:{{fontSize}}" bindlongpress="longPress" bindtap="textTap" bindtouchend="textTouchEnd">
-    <view data-index="{{index}}" 
+    <text data-index="{{index}}" 
+      space="{{space}}"
+      decode="{{decode}}"
       class="custom-text" 
       wx:key="index" 
       wx:for="{{text}}"
       id="text-{{index}}"
       data-text="{{item}}"
-      data-id="{{index}}">{{item}}</view>
+      data-id="{{index}}">{{item}}</text>
   </view>
   <!-- 标记状态 -->
   <block wx:for="{{selects}}" wx:key="id">
