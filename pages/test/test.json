@@ -1,0 +1,5 @@
+{
+  "usingComponents": {
+    "custom-text": "/components/customText/customText"
+  }
+}

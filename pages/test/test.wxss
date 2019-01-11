@@ -1,0 +1,11 @@
+.custom-outer-text{
+  display: block;
+}
+.custom-text-wrapper{
+  display: flex;
+  flex-wrap: wrap;
+}
+.custom-text{
+  position: relative;
+  z-index: 10;
+}

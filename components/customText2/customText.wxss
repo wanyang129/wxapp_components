@@ -1,0 +1,103 @@
+.custom-text-container{
+  position: relative;
+  z-index: 0;
+  display: block;
+}
+.custom-text-wrapper{
+  display: flex;
+  flex-wrap: wrap;
+}
+.custom-text{
+  letter-spacing: 0;
+  position: relative;
+  z-index: 10;
+}
+.custom-text.current{
+  background: rgba(177,208,239,0.6);
+}
+.highlight-before,.highlight-after{
+  width: 10px;
+  position: absolute;
+  top: 0;
+}
+.highlight-before::after,.highlight-after::after{
+  content: "";
+  position: absolute;
+  z-index: 110;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #176ee1;
+  left: 0;
+}
+.highlight-before::after{
+  top: -8px;
+}
+.highlight-after::after{
+  bottom: -8px;
+}
+.highlight-before::before,.highlight-after::before{
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  top: 0;
+  left: 4px;
+  background: #176ee1;
+}
+.hights{
+  position: absolute;
+  z-index: 100;
+  background: rgba(177,208,239,0.6);
+}
+.btn-modals{
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  background: #000;
+  color: #ffffff;
+  border-radius: 6px;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
+}
+.btn-modal{
+  padding: 0 15px;
+  border-left: 1rpx solid #ffffff;
+}
+.btn-modal:first-of-type{
+  border-left: 0;
+}
+.btn-modals::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+.btn-modals.up::after{
+  border-color: transparent transparent #000000 transparent;
+  top: -20px;
+}
+.btn-modals.down::after{
+  border-color: #000000 transparent transparent transparent;
+  bottom: -20px;
+}
+/* 选中标记 */
+.selects{
+  position: absolute;
+  background: #9efed8;
+  z-index: 1;
+}
+.selects-disable{
+  position: absolute;
+  z-index: 20;
+}
+.selects-line{
+  position: absolute;
+  z-index: 20;
+  border-bottom: 1rpx solid #ff0000;
+}

@@ -1,0 +1,63 @@
+<view class="custom-text-container">
+  <view class="custom-text-wrapper" bindlongpress="longPress" bindtap="textTap" bindtouchend="textTouchEnd">
+    <text data-index="{{index}}" 
+      space="{{space}}"
+      decode="{{decode}}"
+      class="custom-text" 
+      wx:key="*this" 
+      wx:for="{{text}}"
+      id="text-{{index}}"
+      data-text="{{item}}"
+      data-id="{{index}}"
+      style="font-size:{{fontSize}}">{{item}}</text>
+  </view>
+  <!-- 标记状态 -->
+  <block wx:for="{{selects}}" wx:key="id">
+    <!-- 标记 -->
+    <block wx:if="{{item.note}}">
+      <view data-index="{{index}}">
+        <view class="selects" wx:for="{{item.hights}}" wx:key="count"
+          style="width:{{item.width}};height:{{lineHeight}}px;top:{{item.top}};left:{{item.left}};"></view>
+      </view>
+      <view bindtap="selctTap" data-index="{{index}}">
+        <view class="selects-disable" wx:for="{{item.hights}}" wx:key="count"
+          style="width:{{item.width}};height:{{lineHeight}}px;top:{{item.top}};left:{{item.left}};"></view>
+      </view>
+    </block>
+    <!-- 下划线 -->
+    <view wx:elif="{{item.line}}" bindtap="selctTap" data-index="{{index}}">
+      <view class="selects-line" wx:for="{{item.hights}}" wx:key="count"
+        style="width:{{item.width}};height:{{lineHeight}}px;top:{{item.top}};left:{{item.left}};"></view>
+    </view>
+  </block>
+  <view data-index="{{index}}" wx:for="{{selects}}" wx:key="id" wx:if="{{item.note}}">
+    <view class="selects" wx:for="{{item.hights}}" wx:key="count"
+      style="width:{{item.width}};height:{{lineHeight}}px;top:{{item.top}};left:{{item.left}};"></view>
+  </view>
+  <view bindtap="selctTap" data-index="{{index}}" wx:for="{{selects}}" wx:key="id" wx:if="{{item.note}}">
+    <view class="selects-disable" wx:for="{{item.hights}}" wx:key="count"
+      style="width:{{item.width}};height:{{lineHeight}}px;top:{{item.top}};left:{{item.left}};"></view>
+  </view>
+  <!-- 高亮选中 -->
+  <block wx:if="{{showHighlight}}">
+    <view class="hights" wx:for="{{hights}}" wx:key="id" style="width:{{item.width}};height:{{lineHeight}}px;left:{{item.left}};top:{{item.top}};"></view>
+    <!-- 前游标 -->
+    <view class="highlight-before"
+      catchtouchstart="minTouchStart" 
+      catchtouchmove="minTouchMove" 
+      catchtouchend="minTouchEnd" 
+      style="height:{{lineHeight}}px;{{minStyle}}">
+    </view>
+    <!-- 后游标 -->
+    <view class="highlight-after" 
+      catchtouchstart="maxTouchStart" 
+      catchtouchmove="maxTouchMove" 
+      catchtouchend="maxTouchEnd" 
+      style="height:{{lineHeight}}px;{{maxStyle}}">
+    </view>
+  </block>
+
+  <view wx:if="{{selectModal}}" class="btn-modals {{direction}}" style="{{modalStyle}}">
+    <view bindtap="btnTap" data-select-index="{{selectIndex}}" data-id="{{item.id}}" class="btn-modal" wx:for="{{btns}}" wx:key="id">{{item.text}}</view>
+  </view>
+</view>
