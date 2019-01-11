@@ -27,18 +27,18 @@ Component({
     }
   },
   attached() {
-    this.page_flag = true;
+    this.pageFlag = true;
   },
   methods: {
     initFlag() {
-      if (!this.page_flag) {
-        this.page_flag = true;
+      if (!this.pageFlag) {
+        this.pageFlag = true;
       }
     },
     // 路由跳转
     pageRoute() {
-      if (this.page_flag) {
-        this.page_flag = false;
+      if (this.pageFlag) {
+        this.pageFlag = false;
         if (this.properties.isCustom && this.properties.isCustom.event) {
           this.properties.isCustom.event();
         }
