@@ -1,11 +1,19 @@
-<view class="custom-text-wrapper">
-    <text wx:for="{{renderText}}" wx:for-index="idx" wx:key="idx"
-      space="{{space}}"
-      decode="{{decode}}"
-      class="custom-text" 
-      id="text-{{idx}}"
-      data-index="{{idx}}" 
-      data-text="{{item}}"
-      data-id="{{idx}}"
-      style="font-size:{{fontSize}}">{{item}}</text>
-  </view>
+<block wx:if="{{selectable}}">
+	<view class="custom-text-wrapper" id="text-wrapper" bindlongpress="longPress" bindtap="textTap" bindtouchend="textTouchEnd">
+		<block wx:for="{{renderText}}" wx:for-index="idx" wx:key="idx">
+			<view class="custom-text" id="text-{{idx}}" wx:if="{{item!==' '}}"
+				data-index="{{idx}}" 
+				data-text="{{item}}"
+				data-id="{{idx}}"
+				style="font-size:{{fontSize}}">{{item}}</view>
+			<text space="{{space}}" wx:else
+				class="custom-text" 
+				id="text-{{idx}}"
+				data-index="{{idx}}" 
+				data-text="{{item}}"
+				data-id="{{idx}}"
+				style="font-size:{{fontSize}}">{{item}}</text>
+		</block>
+	</view>
+</block>
+<text wx:else space="{{space}}" class="custom-text" style="font-size:{{fontSize}}">{{text}}</text>

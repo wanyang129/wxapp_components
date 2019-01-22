@@ -4,13 +4,15 @@ Component({
     text: {
       type: String,
       observer() {
-        this.setData({
-          // 任何定义了遍历器(Iterator)接口的对象都可以用扩展运算符转为真正的数组
-          renderText: [...this.properties.text]
-        }, () => {
-          console.log(this.data.renderText);
-          this.getTextOffset();
-        })
+        if (this.properties.selectable) {
+          this.setData({
+            // 任何定义了遍历器(Iterator)接口的对象都可以用扩展运算符转为真正的数组
+            renderText: [...this.properties.text]
+          }, () => {
+            console.log(this.data.renderText);
+            this.getTextOffset();
+          })
+        }
       }
     },
     // 文本是否可选
@@ -39,13 +41,16 @@ Component({
     getTextOffset() {
       let textData = [];
       wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper, .custom-text").boundingClientRect().exec(res => {
-        console.log("custom-text", res);
+        console.log("custom-text all", res);
+        console.log("custom-text", res[0]);
         let textArr = res[0];
         this.containerTop = textArr[0].top;
+        let lineHeight = textArr[1].height;
         let j = -1;
-        for (let i = 1, len = textArr.length - 1; i < len; i++) {
+        for (let i = 1, len = textArr.length; i < len; i++) {
+          console.log(textArr[i]);
           // 文字处于第几行
-          let lineCount = (textArr[i].top - this.containerTop) / this.data.lineHeight;
+          let lineCount = (textArr[i].top - this.containerTop) / lineHeight;
           if (lineCount !== j) {
             j = lineCount;
             textData[j] = {
@@ -73,8 +78,15 @@ Component({
           }
         }
         this.textDatas = textData;
+        this.setData({
+          lineHeight: lineHeight
+        });
         console.log("textDatas", this.textDatas);
       })
+    },
+    // 长按事件
+    longPress(e) {
+
     }
   }
 })

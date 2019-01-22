@@ -1,0 +1,10 @@
+
+<view class="arr-wrap">
+  <text id="text-{{index}}" class="arr arr-text" space="{{space}}" wx:for="{{textArr}}" wx:key="*this">{{item}}</text>
+</view>
+<view class="arr-wrap">
+  <block wx:for="{{textArr}}" wx:key="*this">
+    <view id="view-{{index}}" wx:if="{{item!==' '}}" class="arr arr-view" space="{{space}}">{{item}}</view>
+    <text wx:else id="view-{{index}}" class="arr arr-view" space="{{space}}">{{item}}</text>
+  </block>
+</view>
