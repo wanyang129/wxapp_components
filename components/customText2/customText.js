@@ -137,7 +137,7 @@ Component({
             this.minCountIndex = j;
             this.maxCountIndex = j;
             minStyle = "left:" + (rowData.data[j].left - 5) + "px;top:" + rowData.top + "px;";
-            maxStyle = "left:" + (rowData.data[j].left + rowData.data[j].width - 5) + "px;top:" + rowData.top + "px;";
+            maxStyle = "left:" + (rowData.data[j].right - 5) + "px;top:" + rowData.top + "px;";
             hights.push({
               minIndex: this.minIndex,
               maxIndex: this.maxIndex,

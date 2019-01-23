@@ -2,7 +2,20 @@
 <text class="custom-outer-text">{{text}}</text>
 <text class="custom-outer-text" style="font-size:32rpx;">{{text}}</text> -->
 <!-- <text class="custom-outer-text" space="emsp" style="font-size:64rpx;">{{text}}</text> -->
-
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
+<view>asdfsadfsf</view>
 <!-- <view class="custom-text-wrapper">
   <text data-index="{{index}}" 
     class="custom-text" 

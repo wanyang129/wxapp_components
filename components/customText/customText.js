@@ -44,6 +44,7 @@ Component({
         console.log("custom-text all", res);
         console.log("custom-text", res[0]);
         let textArr = res[0];
+        // 文本容器具页面顶部的高度
         this.containerTop = textArr[0].top;
         let lineHeight = textArr[1].height;
         let j = -1;
@@ -54,16 +55,27 @@ Component({
           if (lineCount !== j) {
             j = lineCount;
             textData[j] = {
+              // 文本行的top距离
               top: textArr[i].top - this.containerTop,
+              // 文本行的bottom距离
               bottom: textArr[i].bottom - this.containerTop,
+              // 文本行的左边距
               left: textArr[i].left,
+              // 文本行的高度
               height: textArr[i].height,
+              // 文本行的行数(从0开始)
               count: j,
+              // 文本行中的文字(数组)
               data: [{
+                // 在整个文本中的下标(从0开始)
                 index: textArr[i].dataset.index,
+                // 文本内容
                 text: textArr[i].dataset.text,
+                // 左边距
                 left: textArr[i].left,
+                // 右边距
                 right: textArr[i].right,
+                // 宽度=右边距-左边距
                 width: textArr[i].width,
               }]
             };
@@ -86,7 +98,188 @@ Component({
     },
     // 长按事件
     longPress(e) {
+      console.log("longPress", e);
+      this.touch = 1;
+      if (this.properties.selectable) {
+        // 支持长按事件
+        let minIndex = -1, maxIndex = -1, minStyle = "", maxStyle = "", highlights = [];
+        let count = Math.floor((e.detail.y - this.containerTop) / this.data.lineHeight);
+        console.log("count", count);
+        console.log(this.textDatas[count]);
+        let rowData = this.textDatas[count];
+        // 选中文本最小行标
+        this.minCount = count;
+        // 选中文本最大行标
+        this.maxCount = count;
+        for (let j = 0, colLen = rowData.data.length; j < colLen; j++) {
+          if (e.detail.x >= rowData.data[j].left && e.detail.x <= rowData.data[j].right) {
+            // 选中文本最小下标
+            minIndex = rowData.data[j].index;
+            // 选中文本最大下标
+            maxIndex = rowData.data[j].index;
+            // 最小行标
+            this.minCountIndex = j;
+            // 最大行标
+            this.maxCountIndex = j;
+            // 前游标的位置样式
+            minStyle = "left:" + (rowData.data[j].left - 5) + "px;top:" + rowData.top + "px;";
+            // 后游标的位置样式
+            maxStyle = "left:" + (rowData.data[j].right - 5) + "px;top:" + rowData.top + "px;";
+            highlights.push({
+              id: 0,
+              style: "left:" + rowData.data[j].left + "px;top:" + rowData.top + "px;width:" + rowData.data[j].width + "px;",
+            });
+            break;
+          }
+        }
+        this.minIndex = minIndex;
+        this.maxIndex = maxIndex;
+        this.setData({
+          // 覆盖在文本上的透明层
+          highlights: highlights,
+          // 是否展示高亮选中
+          showHighlight: true,
+          minStyle: minStyle,
+          maxStyle: maxStyle
+        })
+      }
+    },
+    // 前游标触摸开始事件
+    minTouchStart(e) {
+      this.closeSelectModal();
+    },
+    // 前游标触摸移动事件
+    minTouchMove(e) {
+      let pageX = e.touches[0].pageX;
+      let pageY = e.touches[0].pageY;
+      let minStyle = "";
+      let count = Math.floor((pageY - this.containerTop) / this.data.lineHeight);
+      let textDatas = this.textDatas;
+      if (count < 0) {
+        this.minCount = 0;
+        this.minIndex = 0;
+        this.minCountIndex = 0;
+        minStyle = "left:" + (textDatas[0].left - 5) + "px;top:" + textDatas[0].top + "px;";
+      } else if (count >= 0 && count <= this.maxCount) {
+        // 手指滑动到的当前行(数据)
+        this.minCount = count;
+        let textRow = textDatas[count].data;
+        let colLen = textRow.length;
+        for (let j = 0; j < colLen; j++) {
+          if (pageX >= textRow[j].left && pageX <= textRow[j].right) {
+            if (count === this.maxCount && j > this.maxCountIndex) {
+              this.minIndex = this.maxIndex;
+              this.minCountIndex = this.maxCountIndex;
+              minStyle = "left:" + (textRow[this.maxCount].data[this.maxCountIndex].left - 5) + "px;top:" + textDatas[this.maxCount].top + "px;";
+            } else {
+              this.minIndex = textRow[j].index;
+              // 选中的最小行
+              this.minCountIndex = j;
+              minStyle = "left:" + (textRow[j].left - 5) + "px;top:" + textDatas[count].top + "px;";
+            }
+            break;
+          }
+        }
+      } else if (count > this.maxCount) {
+        this.minCount = this.maxCount;
+        this.minIndex = this.maxIndex;
+        this.minCountIndex = this.maxCountIndex;
+        minStyle = "left:" + (textDatas[this.maxCount].data[this.maxCountIndex].left - 5) + "px;top:" + textDatas[this.maxCount].top + "px;";
+      }
+      let highlights = this.getHighlights();
+      this.setData({
+        highlights: highlights,
+        minStyle: minStyle
+      })
+    },
+    // 前游标触摸结束事件
+    minTouchEnd(e) {
+      this.showSelectModal();
+    },
+    // 后游标触摸开始事件
+    maxTouchStart(e) {
+      this.closeSelectModal();
+    },
+    // 后游标触摸移动事件
+    maxTouchMove(e) {
+      let pageX = e.touches[0].pageX;
+      let pageY = e.touches[0].pageY;
+      let maxStyle = "";
+      let count = Math.floor((pageY - this.containerTop) / this.data.lineHeight);
+      let textDatas = this.textDatas;
+      let tlen = textDatas.length;
+      if (count > tlen - 1) {
+        this.maxCount = tlen - 1;
+        let dlen = textDatas[tlen - 1].data.length;
+        this.maxIndex = textDatas[tlen - 1].data[dlen - 1].index;
+        this.maxCountIndex = dlen - 1;
+      } else if (count <= tlen - 1 && count >= 0) {
+        let textRow = textDatas[count].data;
+        this.maxCount = count;
+        let colLen = textRow.length;
+        for (let j = 0; j < colLen; j++) {
+          if (pageX >= textRow[j].left && pageX <= textRow[j].right) {
+            this.maxIndex = textRow[j].index;
+            this.maxCountIndex = j;
+            this.maxCount = count;
+            break;
+          }
+        }
+      } else if (count < 0) {
 
+      }
+    },
+    // 后游标触摸结束事件
+    maxTouchEnd(e) {
+      this.showSelectModal();
+    },
+    // 关闭操作按钮
+    closeSelectModal() {
+      this.setData({
+        selectModal: false
+      })
+    },
+    // 显示操作按钮
+    showSelectModal() {
+      this.setData({
+        selectModal: true
+      })
+    },
+    // 获取高亮层
+    getHighlights() {
+      let textDatas = this.textDatas;
+      let highlights = [];
+      // 最大行和最小行是同一行(即只有一行的情况)
+      if (this.minCount === this.maxCount) {
+        let left = textDatas[this.minCount].data[this.minCountIndex].left;
+        let width = (textDatas[this.maxCount].data[this.maxCountIndex].right - left);
+        highlights.push({
+          id: 0,
+          style: "left:" + left + "px;top:" + textDatas[this.minCount].top + "px;width:" + width + "px;"
+        });
+      } else {
+        // 多行的情况
+        let id = 0;
+        for (let i = this.minCount; i <= this.maxCount; i++) {
+          let left, width, len = textDatas[i].data.length;
+          if (i === this.minCount) {
+            left = textDatas[i].data[this.minCountIndex].left;
+            width = textDatas[i].data[len - 1].right - left;
+          } else {
+            left = textDatas[i].left;
+            if (i === this.maxCount) {
+              width = textDatas[i].data[this.maxCountIndex].right - left;
+            } else {
+              width = textDatas[i].data[len - 1].right - left;
+            }
+          }
+          highlights.push({
+            id: id++,
+            style: "left:" + left + "px;width:" + width + "px;top:" + textDatas[i].top + "px;"
+          })
+        }
+      }
+      return highlights;
     }
   }
 })

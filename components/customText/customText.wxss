@@ -1,3 +1,6 @@
+.custom-text-container{
+  position: relative;
+}
 .custom-text-wrapper{
   display: flex;
   flex-wrap: wrap;
@@ -5,4 +8,40 @@
 .custom-text{
   position: relative;
   z-index: 10;
+}
+/* 前游标和后游标的样式 */
+.highlight-before,.highlight-after{
+  width: 10px;
+  position: absolute;
+  top: 0;
+}
+.highlight-before:after,.highlight-after::after{
+  content: "";
+  position: absolute;
+  z-index: 110;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #176ee1;
+  left: 0;
+}
+.highlight-before::after{
+  top: -8px;
+}
+.highlight-after::after{
+  bottom: -8px;
+}
+.highlight-before::before,.highlight-after::before{
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  top: 0;
+  left: 4px;
+  background: #176ee1;
+}
+.highlights{
+  position: absolute;
+  z-index: 100;
+  background: rgba(177,208,239,0.6);
 }

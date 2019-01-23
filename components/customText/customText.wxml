@@ -1,4 +1,4 @@
-<block wx:if="{{selectable}}">
+<view class="custom-text-container" wx:if="{{selectable}}">
 	<view class="custom-text-wrapper" id="text-wrapper" bindlongpress="longPress" bindtap="textTap" bindtouchend="textTouchEnd">
 		<block wx:for="{{renderText}}" wx:for-index="idx" wx:key="idx">
 			<view class="custom-text" id="text-{{idx}}" wx:if="{{item!==' '}}"
@@ -15,5 +15,22 @@
 				style="font-size:{{fontSize}}">{{item}}</text>
 		</block>
 	</view>
-</block>
+	<block wx:if="{{showHighlight}}">
+		<!-- 覆盖在文本上的透明层 -->
+		<view class="highlights" wx:for="{{highlights}}" wx:key="id"
+			style="height:{{lineHeight}}px;{{item.style}}"></view>
+		<!-- 前游标 -->
+		<view class="highlight-before"
+			catchtouchstart="minTouchStart"
+			catchtouchmove="minTouchMove"
+			catchtouchend="minTouchEnd"
+			style="height:{{lineHeight}}px;{{minStyle}}"></view>
+		<!-- 后游标 -->
+		<view class="highlight-after"
+			catchtouchstart="maxTouchStart"
+			catchtouchmove="maxTouchMove"
+			catchtouchend="maxTouchEnd"
+			style="height:{{lineHeight}}px;{{maxStyle}}"></view>
+	</block>
+</view>
 <text wx:else space="{{space}}" class="custom-text" style="font-size:{{fontSize}}">{{text}}</text>
