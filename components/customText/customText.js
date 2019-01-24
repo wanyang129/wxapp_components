@@ -36,6 +36,22 @@ Component({
       value: "32rpx"
     }
   },
+  data: {
+    selectIndex: -1,
+    selects: [],
+    btns: [
+      { id: "note", text: "笔记" },
+      { id: "line", text: "下划线" },
+      { id: "copy", text: "复制" }
+    ]
+  },
+  attached() {
+    let systemInfo = wx.getSystemInfoSync();
+    console.log("systemInfo", systemInfo);
+    this.setData({
+      screenWidth: systemInfo.screenWidth
+    });
+  },
   methods: {
     // 获取每个字符的位置
     getTextOffset() {
@@ -144,6 +160,19 @@ Component({
         })
       }
     },
+    // 点击事件
+    textTap(e) {
+      if (this.data.selectModal) {
+        this.closeSelectModal();
+      }
+    },
+    // 长按结束事件
+    textTouchEnd(e) {
+      if (this.properties.selectable && this.touch === 1) {
+        this.showSelectModal();
+      }
+      this.touch = -1;
+    },
     // 前游标触摸开始事件
     minTouchStart(e) {
       this.closeSelectModal();
@@ -156,21 +185,24 @@ Component({
       let count = Math.floor((pageY - this.containerTop) / this.data.lineHeight);
       let textDatas = this.textDatas;
       if (count < 0) {
+        // 前游标移动到文本第一行上面
         this.minCount = 0;
         this.minIndex = 0;
         this.minCountIndex = 0;
         minStyle = "left:" + (textDatas[0].left - 5) + "px;top:" + textDatas[0].top + "px;";
       } else if (count >= 0 && count <= this.maxCount) {
-        // 手指滑动到的当前行(数据)
+        // 前游标在第一行和后游标所在行之间移动
         this.minCount = count;
+        // 前游标所在行的数据
         let textRow = textDatas[count].data;
+        // 前游标所在行的数据的长度
         let colLen = textRow.length;
         for (let j = 0; j < colLen; j++) {
           if (pageX >= textRow[j].left && pageX <= textRow[j].right) {
             if (count === this.maxCount && j > this.maxCountIndex) {
               this.minIndex = this.maxIndex;
               this.minCountIndex = this.maxCountIndex;
-              minStyle = "left:" + (textRow[this.maxCount].data[this.maxCountIndex].left - 5) + "px;top:" + textDatas[this.maxCount].top + "px;";
+              minStyle = "left:" + (textRow[this.minCountIndex].left - 5) + "px;top:" + textDatas[count].top + "px;";
             } else {
               this.minIndex = textRow[j].index;
               // 选中的最小行
@@ -181,10 +213,11 @@ Component({
           }
         }
       } else if (count > this.maxCount) {
+        // 前游标移动到后游标所在行的下面
         this.minCount = this.maxCount;
         this.minIndex = this.maxIndex;
         this.minCountIndex = this.maxCountIndex;
-        minStyle = "left:" + (textDatas[this.maxCount].data[this.maxCountIndex].left - 5) + "px;top:" + textDatas[this.maxCount].top + "px;";
+        minStyle = "left:" + (textDatas[this.minCount].data[this.minCountIndex].left - 5) + "px;top:" + textDatas[this.maxCount].top + "px;";
       }
       let highlights = this.getHighlights();
       this.setData({
@@ -209,25 +242,57 @@ Component({
       let textDatas = this.textDatas;
       let tlen = textDatas.length;
       if (count > tlen - 1) {
+        // 后游标移动到文本最后一行的下面
         this.maxCount = tlen - 1;
         let dlen = textDatas[tlen - 1].data.length;
         this.maxIndex = textDatas[tlen - 1].data[dlen - 1].index;
         this.maxCountIndex = dlen - 1;
-      } else if (count <= tlen - 1 && count >= 0) {
+        maxStyle = "left:" + (textDatas[tlen - 1].data[dlen - 1].right - 5) + "px;top:" + textDatas[tlen - 1].top + "px;";
+      } else if (count <= tlen - 1 && count >= this.minCount) {
+        // 后游标在文本最后一行和前游标所在行之间移动
         let textRow = textDatas[count].data;
         this.maxCount = count;
         let colLen = textRow.length;
-        for (let j = 0; j < colLen; j++) {
+        let j = 0;
+        for (; j < colLen; j++) {
           if (pageX >= textRow[j].left && pageX <= textRow[j].right) {
-            this.maxIndex = textRow[j].index;
-            this.maxCountIndex = j;
-            this.maxCount = count;
+            if (count === this.minCount && j < this.minCountIndex) {
+              console.log("移到前游标前面了");
+              this.maxIndex = this.minIndex;
+              this.maxCountIndex = this.minCountIndex;
+              maxStyle = "left:" + (textRow[this.maxCountIndex].right - 5) + "px;top:" + textDatas[count].top + "px;";
+            } else {
+              console.log("在前游标后面");
+              this.maxIndex = textRow[j].index;
+              this.maxCountIndex = j;
+              maxStyle = "left:" + (textRow[j].right - 5) + "px;top:" + textDatas[count].top + "px";
+            }
             break;
           }
         }
-      } else if (count < 0) {
-
+        if (j >= colLen) {
+          this.maxIndex = textRow[j - 1].index;
+          this.maxCountIndex = j - 1;
+          maxStyle = "left:" + (textRow[j - 1].right - 5) + "px;top:" + textDatas[count].top + "px";
+        } else if (j <= 0) {
+          this.maxCount = count - 1;
+          let len = textDatas[count - 1].data.length;
+          this.maxIndex = textDatas[count - 1].data[len - 1].index;
+          this.maxCountIndex = len - 1;
+          maxStyle = "left:" + (textDatas[count - 1].data[len - 1].right - 5) + "px;top:" + textDatas[count - 1].top + "px";
+        }
+      } else if (count < this.minCount) {
+        // 后游标移动到前游标所在行的上面
+        this.maxCount = this.minCount;
+        this.maxIndex = this.minIndex;
+        this.maxCountIndex = this.minCountIndex;
+        maxStyle = "left:" + (textDatas[this.maxCount].data[this.maxCountIndex].right - 5) + "px;top:" + textDatas[this.maxCount].top + "px;";
       }
+      let highlights = this.getHighlights();
+      this.setData({
+        highlights: highlights,
+        maxStyle: maxStyle
+      });
     },
     // 后游标触摸结束事件
     maxTouchEnd(e) {
@@ -241,9 +306,39 @@ Component({
     },
     // 显示操作按钮
     showSelectModal() {
+      let direction, modalStyle = "", textDatas = this.textDatas;
+      if (textDatas[this.minCount].top + this.containerTop < 50) {
+
+        // 选中文本的第一行距顶部距离小于50,按钮层箭头朝上
+        direction = "up";
+        modalStyle += "top:" + (textDatas[this.maxCount].bottom + 18) + "px;";
+      } else {
+        // 箭头朝下
+        direction = "down";
+        modalStyle += "top:" + (textDatas[this.minCount].top - 48) + "px;";
+      }
+      // 后游标的水平位置在前游标水平位置的后面
+      let highlightWidth = 0;
+      if (this.maxCountIndex > this.minCountIndex) {
+        highlightWidth = textDatas[this.maxCount].data[this.maxCountIndex].right - textDatas[this.minCount].data[this.minCountIndex].left;
+      } else {
+        // 后游标的水平位置在前游标的水平位置的前面
+        highlightWidth = textDatas[this.minCount].data[this.minCountIndex].right - textDatas[this.maxCount].data[this.maxCountIndex].left;
+      }
+      // 获取按钮层的水平位置(明天计算)
+      let left = 0;
+      left = Math.abs(highlightWidth - 200) / 2;
+      if (left < 0) {
+        left = 0;
+      } else if (left + 200 < this.data.screenWidth) {
+        left = this.data.screenWidth - 200;
+      }
+      modalStyle += "left:" + left + "px;";
       this.setData({
-        selectModal: true
-      })
+        selectModal: true,
+        direction: direction,
+        modalStyle: modalStyle
+      });
     },
     // 获取高亮层
     getHighlights() {
@@ -280,6 +375,26 @@ Component({
         }
       }
       return highlights;
+    },
+    // 按钮层点击事件
+    btnTap(e) {
+      console.log("btnTap", e);
+      let curObj = e.currentTarget.dataset;
+      console.log("curObj", curObj);
+      if (curObj.id === "note") {
+        // 笔记
+        let selects = this.data.selects;
+        let len = selects.length;
+        selects.push({
+          id: len,
+          highlights: highlights,
+          note: true
+        });
+      } else if (curObj.id === "line") {
+        // 下划线
+      } else if (curObj.id === "copy") {
+        // 复制
+      }
     }
   }
 })

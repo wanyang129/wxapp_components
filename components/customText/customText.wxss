@@ -45,3 +45,39 @@
   z-index: 100;
   background: rgba(177,208,239,0.6);
 }
+.btn-modals{
+  position: absolute;
+  z-index: 100;
+  display: flex;
+  background: #000;
+  color: #ffffff;
+  border-radius: 6px;
+  font-size: 15px;
+  height: 30px;
+  line-height: 30px;
+}
+.btn-modal{
+  padding: 0 15px;
+  border-left: 1rpx solid #ffffff;
+}
+.btn-modal:first-of-type{
+  border-left: none;
+}
+.btn-modals::after{
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-width: 10px;
+  border-style: solid;
+}
+.btn-modals.up::after{
+  border-color: transparent transparent #000000 transparent;
+  top: -20px;
+}
+.btn-modals.down::after{
+  border-color: #000000 transparent transparent transparent;
+  bottom: -20px;
+}

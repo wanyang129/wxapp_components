@@ -58,6 +58,8 @@
   </block>
 
   <view wx:if="{{selectModal}}" class="btn-modals {{direction}}" style="{{modalStyle}}">
-    <view bindtap="btnTap" data-select-index="{{selectIndex}}" data-id="{{item.id}}" class="btn-modal" wx:for="{{btns}}" wx:key="id">{{item.text}}</view>
+    <view bindtap="btnTap" 
+    data-select-index="{{selectIndex}}" 
+    data-id="{{item.id}}" class="btn-modal" wx:for="{{btns}}" wx:key="id">{{item.text}}</view>
   </view>
 </view>

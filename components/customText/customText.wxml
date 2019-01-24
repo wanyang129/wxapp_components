@@ -32,5 +32,11 @@
 			catchtouchend="maxTouchEnd"
 			style="height:{{lineHeight}}px;{{maxStyle}}"></view>
 	</block>
+	<view wx:if="{{selectModal}}" class="btn-modals {{direction}}" style="{{modalStyle}}">
+		<view class="btn-modal" wx:for="{{btns}}" wx:key="id"
+			bindtap="btnTap"
+			data-select-index="{{selectIndex}}"
+			data-id="{{item.id}}">{{item.text}}</view>
+	</view>
 </view>
 <text wx:else space="{{space}}" class="custom-text" style="font-size:{{fontSize}}">{{text}}</text>
