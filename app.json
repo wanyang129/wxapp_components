@@ -1,10 +1,27 @@
 {
   "pages": [
+    "pages/test3/test3",
     "pages/test/test",
     "pages/test2/test2",
     "pages/index/index"
   ],
+  "tabBar": {
+    "color": "#000000",
+    "selectedColor": "#ff0000",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/test/test",
+        "text": "test"
+      },
+      {
+        "pagePath": "pages/test3/test3",
+        "text": "test3"
+      }
+    ]
+  },
   "window": {
-    "navigationBarTitleText": "Components"
+    "navigationBarTitleText": "Components",
+    "navigationStyle": "custom"
   }
 }

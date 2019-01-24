@@ -57,15 +57,15 @@ Component({
     getTextOffset() {
       let textData = [];
       wx.createSelectorQuery().in(this).selectAll(".custom-text-wrapper, .custom-text").boundingClientRect().exec(res => {
-        console.log("custom-text all", res);
-        console.log("custom-text", res[0]);
+        // console.log("custom-text all", res);
+        // console.log("custom-text", res[0]);
         let textArr = res[0];
         // 文本容器具页面顶部的高度
         this.containerTop = textArr[0].top;
         let lineHeight = textArr[1].height;
         let j = -1;
         for (let i = 1, len = textArr.length; i < len; i++) {
-          console.log(textArr[i]);
+          // console.log(textArr[i]);
           // 文字处于第几行
           let lineCount = (textArr[i].top - this.containerTop) / lineHeight;
           if (lineCount !== j) {
@@ -318,19 +318,21 @@ Component({
         modalStyle += "top:" + (textDatas[this.minCount].top - 48) + "px;";
       }
       // 后游标的水平位置在前游标水平位置的后面
-      let highlightWidth = 0;
+      let left = 0, min, max;
       if (this.maxCountIndex > this.minCountIndex) {
-        highlightWidth = textDatas[this.maxCount].data[this.maxCountIndex].right - textDatas[this.minCount].data[this.minCountIndex].left;
+        max = textDatas[this.maxCount].data[this.maxCountIndex].right;
+        min = textDatas[this.minCount].data[this.minCountIndex].left;
       } else {
         // 后游标的水平位置在前游标的水平位置的前面
-        highlightWidth = textDatas[this.minCount].data[this.minCountIndex].right - textDatas[this.maxCount].data[this.maxCountIndex].left;
+        max = textDatas[this.minCount].data[this.minCountIndex].right;
+        min = textDatas[this.maxCount].data[this.minCountIndex].left;
       }
-      // 获取按钮层的水平位置(明天计算)
-      let left = 0;
-      left = Math.abs(highlightWidth - 200) / 2;
+      console.log("min", min, "max", max);
+      left = (max + min - 200) / 2;
+      // 获取按钮层的水平位置
       if (left < 0) {
         left = 0;
-      } else if (left + 200 < this.data.screenWidth) {
+      } else if (left + 200 > this.data.screenWidth) {
         left = this.data.screenWidth - 200;
       }
       modalStyle += "left:" + left + "px;";

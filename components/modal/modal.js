@@ -47,14 +47,17 @@ Component({
       type: Number,
       value: 2000
     },
+    // confirm确认框取消按钮
     cancelText: {
       type: String,
       value: "取消"
     },
+    // confirm确认框确认按钮
     confirmText: {
       type: String,
       value: "确定"
     },
+    // alert框确定按钮
     alertText: {
       type: String,
       value: "确定"

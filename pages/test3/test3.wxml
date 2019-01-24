@@ -1,0 +1,2 @@
+<!-- <text class="test" wx:for="{{count}}" wx:key="*this">100</text> -->
+<rich-text class="test" wx:for="{{count}}" wx:key="*this">100</rich-text>
