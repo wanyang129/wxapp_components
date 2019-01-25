@@ -1,0 +1,4 @@
+<view>
+  <view>test1</view>
+  <slot></slot>
+</view>

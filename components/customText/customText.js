@@ -49,10 +49,12 @@ Component({
     this.setData({
       screenWidth: systemInfo.screenWidth
     });
-    let selects = wx.getStorageSync("selects-" + this.properties.storageId);
-    this.setData({
-      selects: selects
-    });
+    let selects = wx.getStorageSync(this.properties.storageId);
+    if (selects) {
+      this.setData({
+        selects: selects
+      });
+    }
   },
   methods: {
     // 获取每个字符的位置
@@ -408,6 +410,8 @@ Component({
       let operate = curObj.operate;
       let id = curObj.id;
       let selects = this.data.selects;
+      console.log("selects", selects);
+      console.log("data", this.data);
       let textDatas = this.textDatas;
       if (id === "copy") {
         // 复制
@@ -435,6 +439,8 @@ Component({
       } else {
         if (operate === "add") {
           let len = selects.length;
+          console.log("selects", selects);
+          console.log("len", len);
           selects.push({
             id: len,
             highlights: this.data.highlights,
@@ -448,7 +454,7 @@ Component({
             event: touchType
           });
           console.log("selects", selects);
-          wx.setStorageSync("selects-" + this.properties.storageId, selects);
+          wx.setStorageSync(this.properties.storageId, selects);
           this.setData({
             selects: selects,
             showHighlight: false,
@@ -474,7 +480,7 @@ Component({
               selects[selectIndex].noteStyle = "left:" + textDatas[selectItem.maxCount].data[selectItem.maxCountIndex].right + "px;top:" + (textDatas[selectItem.maxCount].top + (this.data.lineHeight - 26) / 2) + "px;";
             }
           }
-          wx.setStorageSync("selects-" + this.properties.storageId, selects);
+          wx.setStorageSync(this.properties.storageId, selects);
           this.setData({
             selects: selects,
             selectModal: false,
