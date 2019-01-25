@@ -33,10 +33,53 @@
 			style="height:{{lineHeight}}px;{{maxStyle}}"></view>
 	</block>
 	<view wx:if="{{selectModal}}" class="btn-modals {{direction}}" style="{{modalStyle}}">
-		<view class="btn-modal" wx:for="{{btns}}" wx:key="id"
-			bindtap="btnTap"
-			data-select-index="{{selectIndex}}"
-			data-id="{{item.id}}">{{item.text}}</view>
+		<block wx:if="{{touchType===1}}">
+			<view class="btn-modal" wx:for="{{btns}}" wx:key="id"
+				bindtap="btnTap"
+				data-touch-type="{{touchType}}"
+				data-id="{{item.id}}"
+				data-operate="add">{{item.text}}</view>
+		</block>
+		<block wx:elif="{{touchType===2}}">
+			<view class="btn-modal" data-id="note" bindtap="btnTap" data-touch-type="{{touchType}}" data-operate="update" data-select-index="{{selectIndex}}" wx:if="{{note}}">删除笔记</view>
+			<view class="btn-modal" data-id="line" bindtap="btnTap" data-touch-type="{{touchType}}" data-operate="update" data-select-index="{{selectIndex}}" wx:if="{{line}}">删除下划线</view>
+			<view class="btn-modal" data-id="copy" bindtap="btnTap" data-touch-type="{{touchType}}" data-operate="update" data-select-index="{{selectIndex}}">复制</view>
+		</block>
+		<block wx:elif="{{touchType===3}}">
+			<view class="btn-modal" data-id="note" bindtap="btnTap" data-touch-type="{{touchType}}" data-operate="update" data-select-index="{{selectIndex}}"><block wx:if="{{note}}">删除笔记</block><block wx:else>笔记</block></view>
+			<view class="btn-modal" data-id="line" bindtap="btnTap" data-touch-type="{{touchType}}" data-operate="update" data-select-index="{{selectIndex}}"><blcok wx:if="{{line}}">删除下划线</blcok><block wx:else>下划线</block></view>
+			<view class="btn-modal" data-id="copy" bindtap="btnTap" data-touch-type="{{touchType}}" data-operate="update" data-select-index="{{selectIndex}}">复制</view>
+		</block>
 	</view>
+	<block wx:for="{{selects}}" wx:key="id" wx:for-index="index">
+		<!-- 笔记 -->
+		<block wx:if="{{item.note}}">
+			<view wx:for="{{item.highlights}}" wx:key="id" wx:for-item="noteItem"
+				wx:for-index="noteIndex" data-index="{{index}}"
+				data-min-count="{{item.minCount}}"
+				data-max-count="{{item.maxCount}}"
+				data-min-count-index="{{item.minCountIndex}}"
+				data-max-count-index="{{item.maxCountIndex}}"
+				bindtap="selectsTap" 
+				bindlongpress="selectsPress"
+				class="note" style="height:{{lineHeight}}px;{{noteItem.style}}"></view>
+			<view wx:for="{{item.highlights}}" wx:key="id" wx:for-item="noteItem"
+				wx:for-index="noteIndex" data-index="{{index}}"
+				class="note note-bg" style="height:{{lineHeight}}px;{{noteItem.style}}"></view>
+				<image class="note-icon" src="/images/note.png" style="{{item.noteStyle}}"></image>
+		</block>
+		<!-- 下划线 -->
+		<block wx:if="{{item.line}}">
+			<view wx:for="{{item.highlights}}" wx:key="id" wx:for-item="noteItem"
+				wx:for-index="noteIndex" data-index="{{index}}"
+				data-min-count="{{item.minCount}}"
+				data-max-count="{{item.maxCount}}"
+				data-min-count-index="{{item.minCountIndex}}"
+				data-max-count-index="{{item.maxCountIndex}}"
+				bindtap="selectsTap" 
+				bindlongpress="selectsPress"
+				class="note note-line" style="height:{{lineHeight}}px;{{noteItem.style}}"></view>
+		</block>
+	</block>
 </view>
 <text wx:else space="{{space}}" class="custom-text" style="font-size:{{fontSize}}">{{text}}</text>

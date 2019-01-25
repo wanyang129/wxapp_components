@@ -8,6 +8,7 @@
 .custom-text{
   position: relative;
   z-index: 10;
+  color: #443344;
 }
 /* 前游标和后游标的样式 */
 .highlight-before,.highlight-after{
@@ -80,4 +81,23 @@
 .btn-modals.down::after{
   border-color: #000000 transparent transparent transparent;
   bottom: -20px;
+}
+/* 笔记 */
+.note{
+  background:transparent;
+  position: absolute;
+  z-index: 100;
+}
+.note-bg{
+  background: cyan;
+  z-index: 1;
+}
+.note-line{
+  border-bottom: 1px solid #ff0000;
+}
+.note-icon{
+  width: 118rpx;
+  height: 52rpx;
+  position: absolute;
+  z-index: 100;
 }

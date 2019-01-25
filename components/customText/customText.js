@@ -25,15 +25,13 @@ Component({
       type: String,
       value: "false"
     },
-    // 是否解码
-    decode: {
-      type: Boolean,
-      value: false
-    },
     // 文本字体大小
     fontSize: {
       type: String,
       value: "32rpx"
+    },
+    storageId: {
+      type: String
     }
   },
   data: {
@@ -50,6 +48,10 @@ Component({
     console.log("systemInfo", systemInfo);
     this.setData({
       screenWidth: systemInfo.screenWidth
+    });
+    let selects = wx.getStorageSync("selects-" + this.properties.storageId);
+    this.setData({
+      selects: selects
     });
   },
   methods: {
@@ -115,6 +117,7 @@ Component({
     // 长按事件
     longPress(e) {
       console.log("longPress", e);
+      // touch=1代表长按事件
       this.touch = 1;
       if (this.properties.selectable) {
         // 支持长按事件
@@ -169,7 +172,13 @@ Component({
     // 长按结束事件
     textTouchEnd(e) {
       if (this.properties.selectable && this.touch === 1) {
-        this.showSelectModal();
+        this.showSelectModal({
+          touchType: this.touch,
+          minCount: this.minCount,
+          maxCount: this.maxCount,
+          minCountIndex: this.minCountIndex,
+          maxCountIndex: this.maxCountIndex
+        });
       }
       this.touch = -1;
     },
@@ -227,7 +236,13 @@ Component({
     },
     // 前游标触摸结束事件
     minTouchEnd(e) {
-      this.showSelectModal();
+      this.showSelectModal({
+        touchType: 1,
+        minCount: this.minCount,
+        maxCount: this.maxCount,
+        minCountIndex: this.minCountIndex,
+        maxCountIndex: this.maxCountIndex
+      });
     },
     // 后游标触摸开始事件
     maxTouchStart(e) {
@@ -296,7 +311,13 @@ Component({
     },
     // 后游标触摸结束事件
     maxTouchEnd(e) {
-      this.showSelectModal();
+      this.showSelectModal({
+        touchType: 1,
+        minCount: this.minCount,
+        maxCount: this.maxCount,
+        minCountIndex: this.minCountIndex,
+        maxCountIndex: this.maxCountIndex
+      });
     },
     // 关闭操作按钮
     closeSelectModal() {
@@ -305,27 +326,26 @@ Component({
       })
     },
     // 显示操作按钮
-    showSelectModal() {
+    showSelectModal({ touchType, minCount, maxCount, minCountIndex, maxCountIndex }) {
       let direction, modalStyle = "", textDatas = this.textDatas;
-      if (textDatas[this.minCount].top + this.containerTop < 50) {
-
+      if (textDatas[minCount].top + this.containerTop < 50) {
         // 选中文本的第一行距顶部距离小于50,按钮层箭头朝上
         direction = "up";
-        modalStyle += "top:" + (textDatas[this.maxCount].bottom + 18) + "px;";
+        modalStyle += "top:" + (textDatas[maxCount].bottom + 18) + "px;";
       } else {
         // 箭头朝下
         direction = "down";
-        modalStyle += "top:" + (textDatas[this.minCount].top - 48) + "px;";
+        modalStyle += "top:" + (textDatas[minCount].top - 48) + "px;";
       }
       // 后游标的水平位置在前游标水平位置的后面
       let left = 0, min, max;
-      if (this.maxCountIndex > this.minCountIndex) {
-        max = textDatas[this.maxCount].data[this.maxCountIndex].right;
-        min = textDatas[this.minCount].data[this.minCountIndex].left;
+      if (maxCountIndex > minCountIndex) {
+        max = textDatas[maxCount].data[maxCountIndex].right;
+        min = textDatas[minCount].data[minCountIndex].left;
       } else {
         // 后游标的水平位置在前游标的水平位置的前面
-        max = textDatas[this.minCount].data[this.minCountIndex].right;
-        min = textDatas[this.maxCount].data[this.minCountIndex].left;
+        max = textDatas[minCount].data[minCountIndex].right;
+        min = textDatas[maxCount].data[minCountIndex].left;
       }
       console.log("min", min, "max", max);
       left = (max + min - 200) / 2;
@@ -337,6 +357,7 @@ Component({
       }
       modalStyle += "left:" + left + "px;";
       this.setData({
+        touchType: touchType,
         selectModal: true,
         direction: direction,
         modalStyle: modalStyle
@@ -382,21 +403,117 @@ Component({
     btnTap(e) {
       console.log("btnTap", e);
       let curObj = e.currentTarget.dataset;
-      console.log("curObj", curObj);
-      if (curObj.id === "note") {
-        // 笔记
-        let selects = this.data.selects;
-        let len = selects.length;
-        selects.push({
-          id: len,
-          highlights: highlights,
-          note: true
-        });
-      } else if (curObj.id === "line") {
-        // 下划线
-      } else if (curObj.id === "copy") {
+      let touchType = curObj.touchType;
+      let selectIndex = curObj.selectIndex;
+      let operate = curObj.operate;
+      let id = curObj.id;
+      let selects = this.data.selects;
+      let textDatas = this.textDatas;
+      if (id === "copy") {
         // 复制
+        let text;
+        let textDatas = this.textDatas;
+        let minCount, maxCount, minCountIndex, maxCountIndex, minIndex, maxIndex;
+        if (operate === "update") {
+          minCount = selects[selectIndex].minCount;
+          maxCount = selects[selectIndex].maxCount;
+          minCountIndex = selects[selectIndex].minCountIndex;
+          maxCountIndex = selects[selectIndex].maxCountIndex;
+        } else if (operate === "add") {
+          minCount = this.minCount;
+          maxCount = this.maxCount;
+          minCountIndex = this.minCountIndex;
+          maxCountIndex = this.maxCountIndex;
+        }
+        minIndex = textDatas[minCount].data[minCountIndex].index;
+        maxIndex = textDatas[maxCount].data[maxCountIndex].index;
+        text = this.properties.text.substring(minIndex, maxIndex);
+        console.log("text", text);
+        wx.setClipboardData({
+          data: text
+        });
+      } else {
+        if (operate === "add") {
+          let len = selects.length;
+          selects.push({
+            id: len,
+            highlights: this.data.highlights,
+            minCount: this.minCount,
+            maxCount: this.maxCount,
+            minCountIndex: this.minCountIndex,
+            maxCountIndex: this.maxCountIndex,
+            note: id === "note" ? true : false,
+            noteStyle: "left:" + textDatas[this.maxCount].data[this.maxCountIndex].right + "px;top:" + (textDatas[this.maxCount].top + (this.data.lineHeight - 26) / 2) + "px;",
+            line: id === "line" ? true : false,
+            event: touchType
+          });
+          console.log("selects", selects);
+          wx.setStorageSync("selects-" + this.properties.storageId, selects);
+          this.setData({
+            selects: selects,
+            showHighlight: false,
+            selectModal: false
+          });
+        } else if (operate === "update") {
+          if (touchType === 2) {
+            // 点击事件
+            if ((id === "note" && selects[selectIndex].line) || (id === "line" && selects[selectIndex].note)) {
+              selects[selectIndex][id] = false;
+            } else {
+              selects.splice(selectIndex, 1);
+            }
+          } else if (touchType === 3) {
+            console.log("update before", selects[selectIndex]);
+            // 长按事件
+            selects[selectIndex][id] = !selects[selectIndex][id];
+            console.log("selects", selects[selectIndex]);
+            if (!selects[selectIndex].note && !selects[selectIndex].line) {
+              selects.splice(selectIndex, 1);
+            } else if (selects[selectIndex].note) {
+              let selectItem = selects[selectIndex];
+              selects[selectIndex].noteStyle = "left:" + textDatas[selectItem.maxCount].data[selectItem.maxCountIndex].right + "px;top:" + (textDatas[selectItem.maxCount].top + (this.data.lineHeight - 26) / 2) + "px;";
+            }
+          }
+          wx.setStorageSync("selects-" + this.properties.storageId, selects);
+          this.setData({
+            selects: selects,
+            selectModal: false,
+            selectIndex: -1
+          })
+        }
       }
+    },
+    // 点击标记内容
+    selectsTap(e) {
+      let sObj = e.currentTarget.dataset;
+      this.selectsTriggerModal(sObj, 2);
+    },
+    // 长按标记内容
+    selectsPress(e) {
+      let sObj = e.currentTarget.dataset;
+      this.selectsTriggerModal(sObj, 3);
+    },
+    // 标记层触发按钮层显示
+    selectsTriggerModal(sObj, touchType) {
+      let index = sObj.index;
+      let selects = this.data.selects;
+      let minCount = sObj.minCount;
+      let maxCount = sObj.maxCount;
+      let minCountIndex = sObj.minCountIndex;
+      let maxCountIndex = sObj.maxCountIndex;
+      console.log("index", index);
+      this.showSelectModal({
+        touchType: touchType,
+        minCount: minCount,
+        maxCount: maxCount,
+        minCountIndex: minCountIndex,
+        maxCountIndex: maxCountIndex
+      });
+      this.setData({
+        note: selects[index].note,
+        line: selects[index].line,
+        selectIndex: index
+      });
     }
   }
 })
