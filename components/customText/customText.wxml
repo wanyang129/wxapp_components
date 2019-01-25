@@ -66,7 +66,7 @@
 			<view wx:for="{{item.highlights}}" wx:key="id" wx:for-item="noteItem"
 				wx:for-index="noteIndex" data-index="{{index}}"
 				class="note note-bg" style="height:{{lineHeight}}px;{{noteItem.style}}"></view>
-				<image class="note-icon" src="/images/note.png" style="{{item.noteStyle}}"></image>
+				<image class="note-icon" src="/components/images/note.png" style="{{item.noteStyle}}"></image>
 		</block>
 		<!-- 下划线 -->
 		<block wx:if="{{item.line}}">
